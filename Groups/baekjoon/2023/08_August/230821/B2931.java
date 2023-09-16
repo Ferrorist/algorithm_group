@@ -12,9 +12,9 @@ public class B2931 {
 
     // 1 : Γ 2 : ㄴ : 3 : 」 : 4 : ㄱ
     // UP : 아래에서 위로 갈 수 있는 블럭, DOWN : 위에서 아래로 갈 수 있는 블럭
-    static final String UP = "|14+", DOWN = "|23+"; 
+    static final String UP = "|14", DOWN = "|23"; 
     // LEFT : 오른쪽에서 왼쪽으로 갈 수 있는 블럭, RIGHT : 왼쪽에서 오른쪽으로 갈 수 있는 블럭
-    static final String LEFT = "-12+", RIGHT = "-34+";
+    static final String LEFT = "-12", RIGHT = "-34";
     static final char[] pipes= {'|', '-', '1', '2', '3', '4'};
 
     static final String[] dirString = {UP, RIGHT, DOWN, LEFT};
@@ -63,28 +63,9 @@ public class B2931 {
             }
         } // 시작점에서의 탐색 끝
 
-        int[] EMPTY_coord; // 파이프를 채워야 할 좌표
-
-        // 만약 시작점에서 파이프를 찾지 못하였을 경우, 도착점에서 탐색하여 진행한다.
-        if(visited[start_coord[0]][start_coord[1]] == -1){
-            for(int type = 0; type < 4; type++){
-            int dy = finish_coord[0] + dir[type][0];
-            int dx = finish_coord[1] + dir[type][1];
-            // 탐색 범위를 벗어났다면 재탐색
-            if(!(dy >= 0 && dx >= 0 && dy < R && dx < C))   continue;
-
-            // 시작 블럭에서 출발하여 해당 방향으로 갈 수 있는 블럭이라면, 탐색을 종료함.
-            if(dirString[type].indexOf(board[dy][dx]) != -1 || board[dy][dx] == '+'){
-                visited[finish_coord[0]][finish_coord[1]] = type;
-                break;
-                }
-            }
-            EMPTY_coord = findEMPTY(finish_coord, false);
-        }
-        
         // 2. 보드의 시작점에서부터 경로를 이동하여 빈 칸을 찾는다. 
         // 그리고 빈 칸에 도달 했을 때, 진행 방향을 저장한다.
-        else EMPTY_coord = findEMPTY(start_coord, true);
+        int[] EMPTY_coord = findEMPTY(start_coord, true);
 
         // 3. 빈 칸에 어떤 것을 넣어야 하는지 판단한다.
         // 빈 칸을 기준으로 4방 탐색을 진행.
@@ -108,7 +89,7 @@ public class B2931 {
         }
         else{
             Search:
-            for(int i = 0; i < pipes.length; i++){ // 빈 칸에 파이프를 넣으며 해당 파이프가 가능한지 확인.
+            for(int i = 0; i < pipes.length; i++){
                 char pipe = pipes[i];
                 for(int j = 0; j < goList.size(); j++){
                 	int idx = goList.get(j);
@@ -184,8 +165,6 @@ public class B2931 {
             }
             else{ // board[cy][cx]가 '+' 일 경우
                 int enter_dir = (7 - visited[cy][cx]);
-                if(enter_dir % 2 == 0) enter_dir = Math.abs(enter_dir - 2);
-                else enter_dir = 4 - enter_dir; // 현재 + 블럭 어떤 방향의 블럭에서 들어왔는지 최종적으로 계산함.
                 for(int type = 0; type < 4; type++){
                     if(type == enter_dir) continue; // 진입하였던 방향인 경우 탐색하지 않음.
                     int dy = cy + dir[type][0], dx = cx + dir[type][1];
